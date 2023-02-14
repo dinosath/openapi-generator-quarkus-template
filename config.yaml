@@ -1,0 +1,10 @@
+templateDir: my_custom_templates
+hideGenerationTimestamp: true
+supportAsync: true
+additionalProperties:
+  interfaceOnly: true
+  useSwaggerAnnotations: false
+files:
+  dto_model.mustache:
+    templateType: Model
+    destinationFilename: Dto.java
