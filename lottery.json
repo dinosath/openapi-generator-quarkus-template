@@ -26,7 +26,8 @@
                 },
                 "operationId": "getUsers",
                 "summary": "List All Users",
-                "description": "Gets a list of all `User` entities."
+                "description": "Gets a list of all `User` entities.",
+                "x-http-method-lowercase":"get"
             },
             "post": {
                 "requestBody": {
@@ -47,7 +48,8 @@
                 },
                 "operationId": "createUser",
                 "summary": "Create a User",
-                "description": "Creates a new instance of a `User`."
+                "description": "Creates a new instance of a `User`.",
+                "x-http-method-lowercase":"post"
             }
         },
         "/users/{userId}": {
@@ -68,7 +70,8 @@
                 },
                 "operationId": "getUser",
                 "summary": "Get a User",
-                "description": "Gets the details of a single instance of a `User`."
+                "description": "Gets the details of a single instance of a `User`.",
+                "x-http-method-lowercase":"get"
             },
             "put": {
                 "requestBody": {
@@ -89,7 +92,8 @@
                 },
                 "operationId": "updateUser",
                 "summary": "Update a User",
-                "description": "Updates an existing `User`."
+                "description": "Updates an existing `User`.",
+                "x-http-method-lowercase":"put"
             },
             "delete": {
                 "responses": {
@@ -99,7 +103,8 @@
                 },
                 "operationId": "deleteUser",
                 "summary": "Delete a User",
-                "description": "Deletes an existing `User`."
+                "description": "Deletes an existing `User`.",
+                "x-http-method-lowercase":"delete"
             },
             "parameters": [
                 {
@@ -134,7 +139,8 @@
                 },
                 "operationId": "getLotteries",
                 "summary": "List All Lotteries",
-                "description": "Gets a list of all `Lottery` entities."
+                "description": "Gets a list of all `Lottery` entities.",
+                "x-http-method-lowercase":"get"
             },
             "post": {
                 "requestBody": {
@@ -155,7 +161,9 @@
                 },
                 "operationId": "createLottery",
                 "summary": "Create a Lottery",
-                "description": "Creates a new instance of a `Lottery`."
+                "description": "Creates a new instance of a `Lottery`.",
+                "x-http-method-lowercase":"post",
+                "x-isInsert":"true"
             }
         },
         "/lotteries/{lotteryId}": {
@@ -176,7 +184,8 @@
                 },
                 "operationId": "getLottery",
                 "summary": "Get a Lottery",
-                "description": "Gets the details of a single instance of a `Lottery`."
+                "description": "Gets the details of a single instance of a `Lottery`.",
+                "x-http-method-lowercase":"get"
             },
             "put": {
                 "requestBody": {
@@ -197,7 +206,8 @@
                 },
                 "operationId": "updateLottery",
                 "summary": "Update a Lottery",
-                "description": "Updates an existing `Lottery`."
+                "description": "Updates an existing `Lottery`.",
+                "x-http-method-lowercase":"put"
             },
             "delete": {
                 "responses": {
@@ -207,7 +217,8 @@
                 },
                 "operationId": "deleteLottery",
                 "summary": "Delete a Lottery",
-                "description": "Deletes an existing `Lottery`."
+                "description": "Deletes an existing `Lottery`.",
+                "x-http-method-lowercase":"delete"
             },
             "parameters": [
                 {
@@ -242,7 +253,8 @@
                 },
                 "operationId": "getGifts",
                 "summary": "List All Gifts",
-                "description": "Gets a list of all `Gift` entities."
+                "description": "Gets a list of all `Gift` entities.",
+                "x-http-method-lowercase":"get"
             },
             "post": {
                 "requestBody": {
@@ -263,7 +275,8 @@
                 },
                 "operationId": "createGift",
                 "summary": "Create a Gift",
-                "description": "Creates a new instance of a `Gift`."
+                "description": "Creates a new instance of a `Gift`.",
+                "x-http-method-lowercase":"post"
             }
         },
         "/gifts/{giftId}": {
@@ -284,7 +297,8 @@
                 },
                 "operationId": "getGift",
                 "summary": "Get a Gift",
-                "description": "Gets the details of a single instance of a `Gift`."
+                "description": "Gets the details of a single instance of a `Gift`.",
+                "x-http-method-lowercase":"get"
             },
             "put": {
                 "requestBody": {
@@ -305,7 +319,8 @@
                 },
                 "operationId": "updateGift",
                 "summary": "Update a Gift",
-                "description": "Updates an existing `Gift`."
+                "description": "Updates an existing `Gift`.",
+                "x-http-method-lowercase":"put"
             },
             "delete": {
                 "responses": {
@@ -315,7 +330,8 @@
                 },
                 "operationId": "deleteGift",
                 "summary": "Delete a Gift",
-                "description": "Deletes an existing `Gift`."
+                "description": "Deletes an existing `Gift`.",
+                "x-http-method-lowercase":"delete"
             },
             "parameters": [
                 {
@@ -390,7 +406,9 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Price"
-                        }
+                        },
+                        "maximum": 50,
+                        "minimum": 1
                     }
                 }
             },
@@ -404,12 +422,12 @@
                 "type": "string"
             },
             "Lottery": {
-                "description": "",
                 "required": [
                     "id",
                     "name",
                     "gifts",
-                    "participants"
+                    "participants",
+                    "number-of-participants"
                 ],
                 "type": "object",
                 "properties": {
@@ -428,6 +446,13 @@
                         "description": "",
                         "type": "string",
                         "readOnly": true
+                    },
+                    "autoplay":{
+                      "type": "boolean"
+                    },
+                    "number-of-participants":{
+                      "type": "integer",
+                      "minimum": 1
                     },
                     "gifts": {
                         "description": "",

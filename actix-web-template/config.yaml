@@ -1,0 +1,20 @@
+templateDir: custom-template-files
+hideGenerationTimestamp: true
+supportAsync: true
+packageName: test
+packageVersion: 1.0.0
+additionalProperties:
+  interfaceOnly: true
+  useSwaggerAnnotations: false
+files:
+  Cargo.mustache:
+    templateType: SupportingFiles
+    destinationFilename: Cargo.toml
+  main.mustache:
+    templateType: SupportingFiles
+    folder: src
+    destinationFilename: main.rs
+  apis.mustache:
+    templateType: SupportingFiles
+    folder: src
+    destinationFilename: apis.rs

@@ -1,0 +1,20 @@
+use actix_web::{get, post, put, delete, Responder, HttpResponse};
+
+
+{{#apiInfo}}
+  {{#apis}}
+    {{#operations}}
+      {{#operation}}
+        {{#vendorExtensions}}
+            {{#x-operation-id}}
+#[{{#x-http-method-lowercase}}{{{x-http-method-lowercase}}}{{/x-http-method-lowercase}}("{{path}}")]
+pub async fn {{{x-operation-id}}}() -> impl Responder {
+    HttpResponse::Ok().body("{{{x-operation-id}}}")
+}
+
+            {{/x-operation-id}}
+        {{/vendorExtensions}}
+      {{/operation}}
+    {{/operations}}
+  {{/apis}}
+{{/apiInfo}}

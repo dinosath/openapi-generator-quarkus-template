@@ -1,6 +1,7 @@
 templateDir: my_custom_templates
 hideGenerationTimestamp: true
 supportAsync: true
+debugOpenAPI: true
 additionalProperties:
   interfaceOnly: true
   useSwaggerAnnotations: false
