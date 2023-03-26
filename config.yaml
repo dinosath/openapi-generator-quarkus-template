@@ -1,0 +1,12 @@
+inputSpec: lottery.json
+outputDir: lottery
+generatorName: jaxrs-spec
+additionalProperties:
+    artifactId: lottery-service
+    groupId: com.crazyfly
+    library: quarkus
+debugOperations: true
+debugModels: true
+templateDir: quarkus-template/templates
+typeMappings: array=Set
+importMappings: Set=java.util.Set

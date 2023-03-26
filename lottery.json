@@ -218,7 +218,8 @@
                 "operationId": "deleteLottery",
                 "summary": "Delete a Lottery",
                 "description": "Deletes an existing `Lottery`.",
-                "x-http-method-lowercase":"delete"
+                "x-http-method-lowercase":"delete",
+                "x-data-type-delete":"Lottery"
             },
             "parameters": [
                 {
@@ -355,22 +356,34 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "description": "",
-                        "type": "string"
-                    }
+                  "id": {
+                    "format": "uuid",
+                    "description": "",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-is-id": true
+                  }
                 }
             },
             "Price": {
                 "description": "",
                 "required": [
+                    "id",
                     "value",
                     "currency",
                     "locale"
                 ],
                 "type": "object",
                 "properties": {
-                    "value": {
+                  "id": {
+                    "format": "uuid",
+                    "description": "",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-is-id": true
+                  },
+
+                  "value": {
                         "format": "double",
                         "description": "",
                         "type": "number"
@@ -392,12 +405,21 @@
             "Gift": {
                 "description": "",
                 "required": [
+                    "id",
                     "name",
                     "prices"
                 ],
                 "type": "object",
                 "properties": {
-                    "name": {
+                  "id": {
+                    "format": "uuid",
+                    "description": "",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-is-id": true
+                  },
+
+                  "name": {
                         "description": "",
                         "type": "string"
                     },
@@ -435,7 +457,8 @@
                         "format": "uuid",
                         "description": "",
                         "type": "string",
-                        "readOnly": true
+                        "readOnly": true,
+                        "x-is-id": true
                     },
                     "name": {
                         "description": "",
@@ -459,7 +482,8 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Gift"
-                        }
+                        },
+                        "x-relation-many-to-many":true
                     },
                     "participants": {
                         "description": "",

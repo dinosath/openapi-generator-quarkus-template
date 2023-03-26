@@ -1,3 +1,5 @@
 lottery/
 **/openapitools.json
 **logs.txt
+**/target
+.idea

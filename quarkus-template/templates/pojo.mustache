@@ -7,6 +7,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.validation.constraints.*;
+import javax.validation.Valid;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
  * {{.}}
@@ -30,6 +39,14 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   {{/mostInnerItems}}
   {{/isContainer}}
   {{/isEnum}}
+  {{#isArray}}
+  {{#vendorExtensions.x-relation-many-to-many}}
+
+  @ManyToMany(cascade = { CascadeType.ALL })
+  @JoinTable(name = "{{model.classVarName}}_{{baseName}}", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns = { @JoinColumn(name = "id") })
+  {{/vendorExtensions.x-relation-many-to-many}}
+  {{/isArray}}
+
   {{#vendorExtensions.x-field-extra-annotation}}
   {{{vendorExtensions.x-field-extra-annotation}}}
   {{/vendorExtensions.x-field-extra-annotation}}
@@ -69,6 +86,14 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     return this;
   }
 
+  {{#vendorExtensions.x-is-id}}
+  @Id
+  {{#isUuid}}
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator",parameters = {@Parameter(name = "uuid_gen_strategy_class",value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
+  {{/isUuid}}
+  @Column(name = "id", updatable = false, nullable = false)
+  {{/vendorExtensions.x-is-id}}
   {{#vendorExtensions.x-extra-annotation}}{{{vendorExtensions.x-extra-annotation}}}{{/vendorExtensions.x-extra-annotation}}{{#useSwaggerAnnotations}}
   @ApiModelProperty({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}"){{/useSwaggerAnnotations}}
   @JsonProperty("{{baseName}}")
