@@ -5,6 +5,7 @@ additionalProperties:
     artifactId: lottery-service
     groupId: com.crazyfly
     library: quarkus
+    useSwaggerAnnotations: false
 debugOperations: true
 debugModels: true
 templateDir: quarkus-template/templates
