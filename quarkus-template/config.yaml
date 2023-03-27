@@ -1,11 +1,10 @@
-templateDir: my_custom_templates
-hideGenerationTimestamp: true
-supportAsync: true
-debugOpenAPI: true
+inputSpec: lottery.json
+outputDir: lottery
+generatorName: jaxrs-spec
 additionalProperties:
-  interfaceOnly: true
-  useSwaggerAnnotations: false
-files:
-  dto_model.mustache:
-    templateType: Model
-    destinationFilename: Dto.java
+    artifactId: lottery-service
+    groupId: com.crazyfly
+    library: quarkus
+debugOperations: true
+debugModels: true
+templateDir: quarkus-template/templates
