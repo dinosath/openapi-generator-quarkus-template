@@ -9,3 +9,8 @@ additionalProperties:
 debugOperations: true
 debugModels: true
 templateDir: quarkus-template/templates
+files:
+    dto_pojo.mustache:
+        templateType: Model
+        destinationFilename: Dto.java
+debugModels: true

@@ -26,8 +26,7 @@
                 },
                 "operationId": "getUsers",
                 "summary": "List All Users",
-                "description": "Gets a list of all `User` entities.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets a list of all `User` entities."
             },
             "post": {
                 "requestBody": {
@@ -48,8 +47,7 @@
                 },
                 "operationId": "createUser",
                 "summary": "Create a User",
-                "description": "Creates a new instance of a `User`.",
-                "x-http-method-lowercase":"post"
+                "description": "Creates a new instance of a `User`."
             }
         },
         "/users/{userId}": {
@@ -70,8 +68,7 @@
                 },
                 "operationId": "getUser",
                 "summary": "Get a User",
-                "description": "Gets the details of a single instance of a `User`.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets the details of a single instance of a `User`."
             },
             "put": {
                 "requestBody": {
@@ -92,8 +89,7 @@
                 },
                 "operationId": "updateUser",
                 "summary": "Update a User",
-                "description": "Updates an existing `User`.",
-                "x-http-method-lowercase":"put"
+                "description": "Updates an existing `User`."
             },
             "delete": {
                 "responses": {
@@ -103,8 +99,7 @@
                 },
                 "operationId": "deleteUser",
                 "summary": "Delete a User",
-                "description": "Deletes an existing `User`.",
-                "x-http-method-lowercase":"delete"
+                "description": "Deletes an existing `User`."
             },
             "parameters": [
                 {
@@ -139,8 +134,7 @@
                 },
                 "operationId": "getLotteries",
                 "summary": "List All Lotteries",
-                "description": "Gets a list of all `Lottery` entities.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets a list of all `Lottery` entities."
             },
             "post": {
                 "requestBody": {
@@ -161,9 +155,7 @@
                 },
                 "operationId": "createLottery",
                 "summary": "Create a Lottery",
-                "description": "Creates a new instance of a `Lottery`.",
-                "x-http-method-lowercase":"post",
-                "x-isInsert":"true"
+                "description": "Creates a new instance of a `Lottery`."
             }
         },
         "/lotteries/{lotteryId}": {
@@ -184,8 +176,7 @@
                 },
                 "operationId": "getLottery",
                 "summary": "Get a Lottery",
-                "description": "Gets the details of a single instance of a `Lottery`.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets the details of a single instance of a `Lottery`."
             },
             "put": {
                 "requestBody": {
@@ -206,8 +197,7 @@
                 },
                 "operationId": "updateLottery",
                 "summary": "Update a Lottery",
-                "description": "Updates an existing `Lottery`.",
-                "x-http-method-lowercase":"put"
+                "description": "Updates an existing `Lottery`."
             },
             "delete": {
                 "responses": {
@@ -218,8 +208,7 @@
                 "operationId": "deleteLottery",
                 "summary": "Delete a Lottery",
                 "description": "Deletes an existing `Lottery`.",
-                "x-http-method-lowercase":"delete",
-                "x-data-type-delete":"Lottery"
+                "x-data-type-delete": "Lottery"
             },
             "parameters": [
                 {
@@ -254,8 +243,7 @@
                 },
                 "operationId": "getGifts",
                 "summary": "List All Gifts",
-                "description": "Gets a list of all `Gift` entities.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets a list of all `Gift` entities."
             },
             "post": {
                 "requestBody": {
@@ -276,8 +264,7 @@
                 },
                 "operationId": "createGift",
                 "summary": "Create a Gift",
-                "description": "Creates a new instance of a `Gift`.",
-                "x-http-method-lowercase":"post"
+                "description": "Creates a new instance of a `Gift`."
             }
         },
         "/gifts/{giftId}": {
@@ -298,8 +285,7 @@
                 },
                 "operationId": "getGift",
                 "summary": "Get a Gift",
-                "description": "Gets the details of a single instance of a `Gift`.",
-                "x-http-method-lowercase":"get"
+                "description": "Gets the details of a single instance of a `Gift`."
             },
             "put": {
                 "requestBody": {
@@ -320,8 +306,7 @@
                 },
                 "operationId": "updateGift",
                 "summary": "Update a Gift",
-                "description": "Updates an existing `Gift`.",
-                "x-http-method-lowercase":"put"
+                "description": "Updates an existing `Gift`."
             },
             "delete": {
                 "responses": {
@@ -331,8 +316,7 @@
                 },
                 "operationId": "deleteGift",
                 "summary": "Delete a Gift",
-                "description": "Deletes an existing `Gift`.",
-                "x-http-method-lowercase":"delete"
+                "description": "Deletes an existing `Gift`."
             },
             "parameters": [
                 {
@@ -352,17 +336,21 @@
             "User": {
                 "description": "",
                 "required": [
-                    "id"
+                    "id",
+                    "username"
                 ],
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "format": "uuid",
-                    "description": "",
-                    "type": "string",
-                    "readOnly": true,
-                    "x-is-id": true
-                  }
+                    "id": {
+                        "format": "uuid",
+                        "description": "",
+                        "type": "string",
+                        "readOnly": true,
+                        "x-is-id": true
+                    },
+                    "username":{
+                        "type": "string"
+                    }
                 }
             },
             "Price": {
@@ -375,15 +363,14 @@
                 ],
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "format": "uuid",
-                    "description": "",
-                    "type": "string",
-                    "readOnly": true,
-                    "x-is-id": true
-                  },
-
-                  "value": {
+                    "id": {
+                        "format": "uuid",
+                        "description": "",
+                        "type": "string",
+                        "readOnly": true,
+                        "x-is-id": true
+                    },
+                    "value": {
                         "format": "double",
                         "description": "",
                         "type": "number"
@@ -411,15 +398,14 @@
                 ],
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "format": "uuid",
-                    "description": "",
-                    "type": "string",
-                    "readOnly": true,
-                    "x-is-id": true
-                  },
-
-                  "name": {
+                    "id": {
+                        "format": "uuid",
+                        "description": "",
+                        "type": "string",
+                        "readOnly": true,
+                        "x-is-id": true
+                    },
+                    "name": {
                         "description": "",
                         "type": "string"
                     },
@@ -430,7 +416,8 @@
                             "$ref": "#/components/schemas/Price"
                         },
                         "maximum": 50,
-                        "minimum": 1
+                        "minimum": 1,
+                        "x-relation-many-to-many": true
                     }
                 }
             },
@@ -470,12 +457,12 @@
                         "type": "string",
                         "readOnly": true
                     },
-                    "autoplay":{
-                      "type": "boolean"
+                    "autoplay": {
+                        "type": "boolean"
                     },
-                    "number-of-participants":{
-                      "type": "integer",
-                      "minimum": 1
+                    "number-of-participants": {
+                        "type": "integer",
+                        "minimum": 1
                     },
                     "gifts": {
                         "description": "",
@@ -483,14 +470,15 @@
                         "items": {
                             "$ref": "#/components/schemas/Gift"
                         },
-                        "x-relation-many-to-many":true
+                        "x-relation-many-to-many": true
                     },
                     "participants": {
-                        "description": "",
+                        "description": "The users that participate in the lottery",
                         "type": "array",
                         "items": {
-                            "type": "string"
-                        }
+                            "$ref": "#/components/schemas/User"
+                        },
+                        "x-relation-many-to-many": true
                     },
                     "status": {
                         "$ref": "#/components/schemas/status",
