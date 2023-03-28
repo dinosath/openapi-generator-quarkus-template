@@ -1,5 +1,22 @@
-'!include': 'config.yaml'
+inputSpec: lottery.json
+outputDir: lottery
+generatorName: jaxrs-spec
 additionalProperties:
     modelPackage: com.crazyfly.models.dto
+    generatePom: false
+    sourceFolder: src/main/java
+    artifactId: lottery-service
+    groupId: com.crazyfly
+    apiPackage: com.crazyfly.resources
+    library: quarkus
+    useSwaggerAnnotations: false
 templateDir: quarkus-template/custom_templates
 apis: ""
+files:
+  mapper.mustache:
+    templateType: Model
+    destinationFilename: Mapper.java
+  mappers.mustache:
+    folder: src/main/java/com/crazyfly
+    templateType: SupportingFiles
+    destinationFilename: Mappers.java

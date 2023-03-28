@@ -9,9 +9,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
+{{#models}}
+{{#model}}
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
  * {{.}}
  **/{{/description}}
@@ -21,7 +20,8 @@ import org.hibernate.annotations.Parameter;
 {{#vendorExtensions.x-class-extra-annotation}}
 {{{vendorExtensions.x-class-extra-annotation}}}
 {{/vendorExtensions.x-class-extra-annotation}}
-public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
+
+public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
   {{#readWriteVars}}
   {{#isEnum}}
   {{^isContainer}}
@@ -42,7 +42,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   {{#generateBuilders}}
   {{^additionalProperties}}
 
-  protected {{classname}}({{classname}}Builder<?, ?> b) {
+  protected {{classname}}Dto({{classname}}DtoBuilder<?, ?> b) {
     {{#parent}}
     super(b);
     {{/parent}}
@@ -51,7 +51,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     {{/readWriteVars}}
   }
 
-  public {{classname}}() {
+  public {{classname}}Dto() {
   }
   {{/additionalProperties}}
   {{/generateBuilders}}
@@ -68,7 +68,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
    * maximum: {{.}}
    {{/maximum}}
    **/
-  public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
+  public {{classname}}Dto {{name}}({{{datatypeWithEnum}}} {{name}}) {
     this.{{name}} = {{name}};
     return this;
   }
@@ -88,7 +88,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   }
 
   {{#isArray}}
-  public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+  public {{classname}}Dto add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
     if (this.{{name}} == null) {
       this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new {{#uniqueItems}}LinkedHashSet{{/uniqueItems}}{{^uniqueItems}}ArrayList{{/uniqueItems}}<>(){{/defaultValue}};
     }
@@ -97,7 +97,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     return this;
   }
 
-  public {{classname}} remove{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+  public {{classname}}Dto remove{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
     if ({{name}}Item != null && this.{{name}} != null) {
       this.{{name}}.remove({{name}}Item);
     }
@@ -106,7 +106,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   }
   {{/isArray}}
   {{#isMap}}
-  public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
+  public {{classname}}Dto put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
     if (this.{{name}} == null) {
       this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new HashMap<>(){{/defaultValue}};
     }
@@ -115,7 +115,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     return this;
   }
 
-  public {{classname}} remove{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+  public {{classname}}Dto remove{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
     if ({{name}}Item != null && this.{{name}} != null) {
       this.{{name}}.remove({{name}}Item);
     }
@@ -133,7 +133,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     if (o == null || getClass() != o.getClass()) {
       return false;
     }{{#hasVars}}
-    {{classname}} {{classVarName}} = ({{classname}}) o;
+    {{classname}}Dto {{classVarName}} = ({{classname}}Dto) o;
     return {{#readWriteVars}}{{#isByteArray}}Arrays{{/isByteArray}}{{^isByteArray}}Objects{{/isByteArray}}.equals(this.{{name}}, {{classVarName}}.{{name}}){{^-last}} &&
         {{/-last}}{{/readWriteVars}}{{#parent}} &&
         super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
@@ -148,7 +148,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class {{classname}} {\n");
+    sb.append("class {{classname}}Dto {\n");
     {{#parent}}sb.append("    ").append(toIndentedString(super.toString())).append("\n");{{/parent}}
     {{#readWriteVars}}sb.append("    {{name}}: ").append(toIndentedString({{name}})).append("\n");
     {{/readWriteVars}}sb.append("}");
@@ -167,24 +167,24 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   }
 
 {{#generateBuilders}}{{^additionalProperties}}
-  public static {{classname}}Builder<?, ?> builder() {
-    return new {{classname}}BuilderImpl();
+  public static {{classname}}DtoBuilder<?, ?> builder() {
+    return new {{classname}}DtoBuilderImpl();
   }
 
-  private static final class {{classname}}BuilderImpl extends {{classname}}Builder<{{classname}}, {{classname}}BuilderImpl> {
+  private static final class {{classname}}DtoBuilderImpl extends {{classname}}DtoBuilder<{{classname}}Dto, {{classname}}DtoBuilderImpl> {
 
     @Override
-    protected {{classname}}BuilderImpl self() {
+    protected {{classname}}DtoBuilderImpl self() {
       return this;
     }
 
     @Override
-    public {{classname}} build() {
-      return new {{classname}}(this);
+    public {{classname}}Dto build() {
+      return new {{classname}}Dto(this);
     }
   }
 
-  public static abstract class {{classname}}Builder<C extends {{classname}}, B extends {{classname}}Builder<C, B>> {{#parent}}extends {{{.}}}Builder<C, B>{{/parent}} {
+  public static abstract class {{classname}}DtoBuilder<C extends {{classname}}Dto, B extends {{classname}}DtoBuilder<C, B>> {{#parent}}extends {{{.}}}Builder<C, B>{{/parent}} {
     {{#readWriteVars}}
     private {{{datatypeWithEnum}}} {{name}}{{#defaultValue}} = {{{.}}}{{/defaultValue}};
     {{/readWriteVars}}
@@ -201,4 +201,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     }
     {{/readWriteVars}}
   }{{/additionalProperties}}{{/generateBuilders}}
+
 }
+{{/model}}
+{{/models}}

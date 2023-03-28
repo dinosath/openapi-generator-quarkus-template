@@ -6,7 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import javax.validation.constraints.*;
+import javax.validation.Valid;
 
+{{#models}}
+{{#model}}
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
  * {{.}}
  **/{{/description}}
@@ -16,8 +20,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 {{#vendorExtensions.x-class-extra-annotation}}
 {{{vendorExtensions.x-class-extra-annotation}}}
 {{/vendorExtensions.x-class-extra-annotation}}
-public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
-  {{#vars}}
+public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
+  {{#readWriteVars}}
   {{#isEnum}}
   {{^isContainer}}
   {{>enumClass}}
@@ -33,7 +37,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   {{{vendorExtensions.x-field-extra-annotation}}}
   {{/vendorExtensions.x-field-extra-annotation}}
   private {{#useBeanValidation}}@Valid {{/useBeanValidation}}{{{datatypeWithEnum}}} {{name}}{{#defaultValue}} = {{{.}}}{{/defaultValue}};
-  {{/vars}}
+  {{/readWriteVars}}
   {{#generateBuilders}}
   {{^additionalProperties}}
 
@@ -41,9 +45,9 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
     {{#parent}}
     super(b);
     {{/parent}}
-    {{#vars}}
+    {{#readWriteVars}}
     this.{{name}} = b.{{name}};
-    {{/vars}}
+    {{/readWriteVars}}
   }
 
   public {{classname}}() {
@@ -51,7 +55,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   {{/additionalProperties}}
   {{/generateBuilders}}
 
-  {{#vars}}
+  {{#readWriteVars}}
   /**
    {{#description}}
    * {{.}}
@@ -68,19 +72,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
     return this;
   }
 
-  {{#isArray}}
-  {{#vendorExtensions.x-relation-many-to-many}}
-  @ManyToMany(cascade = { CascadeType.ALL })
-  {{/vendorExtensions.x-relation-many-to-many}}
-  {{/isArray}}
-  {{#vendorExtensions.x-is-id}}
-  @Id
-  {{#isUuid}}
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator",parameters = {@Parameter(name = "uuid_gen_strategy_class",value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
-  {{/isUuid}}
-  @Column(name = "id", updatable = false, nullable = false)
-  {{/vendorExtensions.x-is-id}}
+  
   {{#vendorExtensions.x-extra-annotation}}{{{vendorExtensions.x-extra-annotation}}}{{/vendorExtensions.x-extra-annotation}}{{#useSwaggerAnnotations}}
   @ApiModelProperty({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}"){{/useSwaggerAnnotations}}
   @JsonProperty("{{baseName}}")
@@ -130,7 +122,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
     return this;
   }
   {{/isMap}}
-  {{/vars}}
+  {{/readWriteVars}}
 
   @Override
   public boolean equals(Object o) {
@@ -141,15 +133,15 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
       return false;
     }{{#hasVars}}
     {{classname}} {{classVarName}} = ({{classname}}) o;
-    return {{#vars}}{{#isByteArray}}Arrays{{/isByteArray}}{{^isByteArray}}Objects{{/isByteArray}}.equals(this.{{name}}, {{classVarName}}.{{name}}){{^-last}} &&
-        {{/-last}}{{/vars}}{{#parent}} &&
+    return {{#readWriteVars}}{{#isByteArray}}Arrays{{/isByteArray}}{{^isByteArray}}Objects{{/isByteArray}}.equals(this.{{name}}, {{classVarName}}.{{name}}){{^-last}} &&
+        {{/-last}}{{/readWriteVars}}{{#parent}} &&
         super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
     return {{#parent}}super.equals(o){{/parent}}{{^parent}}true{{/parent}};{{/hasVars}}
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash({{#vars}}{{^isByteArray}}{{name}}{{/isByteArray}}{{#isByteArray}}Arrays.hashCode({{name}}){{/isByteArray}}{{^-last}}, {{/-last}}{{/vars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
+    return Objects.hash({{#readWriteVars}}{{^isByteArray}}{{name}}{{/isByteArray}}{{#isByteArray}}Arrays.hashCode({{name}}){{/isByteArray}}{{^-last}}, {{/-last}}{{/readWriteVars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
   }
 
   @Override
@@ -157,8 +149,8 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
     StringBuilder sb = new StringBuilder();
     sb.append("class {{classname}} {\n");
     {{#parent}}sb.append("    ").append(toIndentedString(super.toString())).append("\n");{{/parent}}
-    {{#vars}}sb.append("    {{name}}: ").append(toIndentedString({{name}})).append("\n");
-    {{/vars}}sb.append("}");
+    {{#readWriteVars}}sb.append("    {{name}}: ").append(toIndentedString({{name}})).append("\n");
+    {{/readWriteVars}}sb.append("}");
     return sb.toString();
   }
 
@@ -192,20 +184,23 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   }
 
   public static abstract class {{classname}}Builder<C extends {{classname}}, B extends {{classname}}Builder<C, B>> {{#parent}}extends {{{.}}}Builder<C, B>{{/parent}} {
-    {{#vars}}
+    {{#readWriteVars}}
     private {{{datatypeWithEnum}}} {{name}}{{#defaultValue}} = {{{.}}}{{/defaultValue}};
-    {{/vars}}
+    {{/readWriteVars}}
   {{^parent}}
     protected abstract B self();
 
     public abstract C build();
     {{/parent}}
 
-    {{#vars}}
+    {{#readWriteVars}}
     public B {{name}}({{{datatypeWithEnum}}} {{name}}) {
       this.{{name}} = {{name}};
       return self();
     }
-    {{/vars}}
+    {{/readWriteVars}}
   }{{/additionalProperties}}{{/generateBuilders}}
+
 }
+{{/model}}
+{{/models}}

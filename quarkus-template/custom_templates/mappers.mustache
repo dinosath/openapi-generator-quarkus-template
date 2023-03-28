@@ -1,0 +1,15 @@
+package {{invokerPackage}};
+
+import org.mapstruct.*;
+
+
+@Mapper(componentModel = "cdi")
+public interface Mappers {
+
+    {{classname}} from{{classname}}Dto({{classname}} {{classVarName}}Dto);
+
+    {{#models}}
+    {{{this}}}
+    {{/models}}
+}
+

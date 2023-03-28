@@ -1,6 +1,8 @@
 package {{package}};
 
-{{#imports}}import {{import}};
+{{#imports}}
+import {{import}}Dto;
+import {{import}};
 {{/imports}}
 
 import {{javaxPackage}}.ws.rs.*;
@@ -28,7 +30,7 @@ import org.hibernate.reactive.mutiny.Mutiny;
 import javax.inject.Inject;
 {{/interfaceOnly}}
 import io.smallrye.mutiny.Uni;
-
+import {{invokerPackage}}.Mappers;
 
 @Path("{{commonPath}}"){{#useSwaggerAnnotations}}
 @Api(description = "the {{{baseName}}} API"){{/useSwaggerAnnotations}}{{#hasConsumes}}
@@ -37,8 +39,19 @@ import io.smallrye.mutiny.Uni;
 {{>generatedAnnotation}}
 public {{#interfaceOnly}}interface{{/interfaceOnly}}{{^interfaceOnly}}class{{/interfaceOnly}} {{classname}} {
 {{^interfaceOnly}}
+    
     @Inject
     Mutiny.SessionFactory sf;
+    
+    @Inject
+    Mappers mappers;
+
+//    @Inject
+//    public {{classname}}(Mutiny.SessionFactory sf,Mappers mappers){
+//      this.sf = sf;
+//      this.mappers = mappers;
+//    }
+
 {{/interfaceOnly}}
 {{#operations}}
 {{#operation}}
