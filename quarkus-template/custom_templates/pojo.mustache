@@ -6,6 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import javax.validation.Valid;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
  * {{.}}
@@ -16,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 {{#vendorExtensions.x-class-extra-annotation}}
 {{{vendorExtensions.x-class-extra-annotation}}}
 {{/vendorExtensions.x-class-extra-annotation}}
+@Entity
 public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
   {{#readWriteVars}}
   {{#isEnum}}
@@ -28,15 +35,11 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   {{/mostInnerItems}}
   {{/isContainer}}
   {{/isEnum}}
+
   {{#vendorExtensions.x-field-extra-annotation}}
   {{{vendorExtensions.x-field-extra-annotation}}}
   {{/vendorExtensions.x-field-extra-annotation}}
-  {{#isContainer}}
-  private {{#useBeanValidation}}@Valid {{/useBeanValidation}}{{{datatypeWithEnum}}} {{name}}{{#required}}{{^isNullable}}{{#defaultValue}} = {{{.}}}{{/defaultValue}}{{/isNullable}}{{#isNullable}} = null{{/isNullable}}{{/required}}{{^required}} = null{{/required}};
-  {{/isContainer}}
-  {{^isContainer}}
   private {{#useBeanValidation}}@Valid {{/useBeanValidation}}{{{datatypeWithEnum}}} {{name}}{{#defaultValue}} = {{{.}}}{{/defaultValue}};
-  {{/isContainer}}
   {{/readWriteVars}}
   {{#generateBuilders}}
   {{^additionalProperties}}
@@ -72,6 +75,19 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
     return this;
   }
 
+  {{#isArray}}
+  {{#vendorExtensions.x-relation-many-to-many}}
+  @ManyToMany(cascade = { CascadeType.ALL })
+  {{/vendorExtensions.x-relation-many-to-many}}
+  {{/isArray}}
+  {{#vendorExtensions.x-is-id}}
+  @Id
+  {{#isUuid}}
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator",parameters = {@Parameter(name = "uuid_gen_strategy_class",value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
+  {{/isUuid}}
+  @Column(name = "id", updatable = false, nullable = false)
+  {{/vendorExtensions.x-is-id}}
   {{#vendorExtensions.x-extra-annotation}}{{{vendorExtensions.x-extra-annotation}}}{{/vendorExtensions.x-extra-annotation}}{{#useSwaggerAnnotations}}
   @ApiModelProperty({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}"){{/useSwaggerAnnotations}}
   @JsonProperty("{{baseName}}")
@@ -88,7 +104,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   {{#isArray}}
   public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
     if (this.{{name}} == null) {
-      this.{{name}} = {{{defaultValue}}};
+      this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new {{#uniqueItems}}LinkedHashSet{{/uniqueItems}}{{^uniqueItems}}ArrayList{{/uniqueItems}}<>(){{/defaultValue}};
     }
 
     this.{{name}}.add({{name}}Item);
@@ -106,7 +122,7 @@ public class {{classname}}Dto {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExt
   {{#isMap}}
   public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
     if (this.{{name}} == null) {
-      this.{{name}} = {{{defaultValue}}};
+      this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new HashMap<>(){{/defaultValue}};
     }
 
     this.{{name}}.put(key, {{name}}Item);

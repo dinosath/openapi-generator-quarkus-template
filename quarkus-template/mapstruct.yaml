@@ -1,0 +1,5 @@
+'!include': 'config.yaml'
+additionalProperties:
+    modelPackage: com.crazyfly.models.dto
+templateDir: quarkus-template/custom_templates
+apis: ""

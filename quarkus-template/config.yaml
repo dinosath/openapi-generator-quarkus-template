@@ -4,13 +4,7 @@ generatorName: jaxrs-spec
 additionalProperties:
     artifactId: lottery-service
     groupId: com.crazyfly
+    modelPackage: com.crazyfly.models
     library: quarkus
     useSwaggerAnnotations: false
-debugOperations: true
-debugModels: true
 templateDir: quarkus-template/templates
-files:
-    dto_pojo.mustache:
-        templateType: Model
-        destinationFilename: Dto.java
-debugModels: true
