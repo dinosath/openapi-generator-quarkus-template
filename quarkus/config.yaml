@@ -9,7 +9,7 @@ additionalProperties:
     groupId: com.crazyfly
     library: quarkus
     useSwaggerAnnotations: false
-templateDir: quarkus-template/templates
+templateDir: quarkus/templates
 files:
   model_dto.mustache:
     folder: dto
