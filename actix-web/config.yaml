@@ -1,4 +1,8 @@
-templateDir: custom-template-files
+inputSpec: lottery.json
+outputDir: lottery
+generatorName: rust
+
+templateDir: actix-web/custom-template-files
 hideGenerationTimestamp: true
 supportAsync: true
 packageName: test
