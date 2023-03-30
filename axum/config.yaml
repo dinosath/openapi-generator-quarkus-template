@@ -1,0 +1,21 @@
+inputSpec: lottery.json
+outputDir: lottery
+generatorName: rust-server
+templateDir: axum/templates
+hideGenerationTimestamp: true
+supportAsync: true
+packageName: com_crazyfly
+packageVersion: 1.0.0
+additionalProperties:
+  interfaceOnly: true
+  useSwaggerAnnotations: false
+supportingFiles: "client/mod.rs"
+files:
+  main.mustache:
+    templateType: SupportingFiles
+    folder: src
+    destinationFilename: main.rs
+  apis.mustache:
+    templateType: SupportingFiles
+    folder: src
+    destinationFilename: apis.rs
