@@ -9,7 +9,6 @@ packageVersion: 1.0.0
 additionalProperties:
   interfaceOnly: true
   useSwaggerAnnotations: false
-supportingFiles: "client/mod.rs"
 files:
   main.mustache:
     templateType: SupportingFiles
