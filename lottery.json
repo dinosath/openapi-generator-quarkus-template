@@ -394,7 +394,8 @@
                 "required": [
                     "id",
                     "name",
-                    "prices"
+                    "prices",
+                    "created"
                 ],
                 "type": "object",
                 "properties": {
@@ -408,6 +409,20 @@
                     "name": {
                         "description": "",
                         "type": "string"
+                    },
+                    "created": {
+                        "format": "date-time",
+                        "description": "",
+                        "type": "string",
+                        "readOnly": true,
+                        "x-created": true
+                    },
+                    "lastUpdated": {
+                        "format": "date-time",
+                        "description": "",
+                        "type": "string",
+                        "readOnly": true,
+                        "x-lastUpdated": true
                     },
                     "prices": {
                         "description": "",

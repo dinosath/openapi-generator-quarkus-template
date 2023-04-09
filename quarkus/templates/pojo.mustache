@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import javax.validation.Valid;
+import jakarta.persistence.*;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
  * {{.}}
@@ -22,7 +23,7 @@ import org.hibernate.annotations.Parameter;
 {{#vendorExtensions.x-class-extra-annotation}}
 {{{vendorExtensions.x-class-extra-annotation}}}
 {{/vendorExtensions.x-class-extra-annotation}}
-@Entity
+@Entity(name="{{classname}}s")
 public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
   {{#vars}}
   {{#isEnum}}
@@ -34,6 +35,33 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   {{>enumClass}}
   {{/mostInnerItems}}
   {{/isContainer}}
+  {{/isEnum}}
+
+  {{^isEnum}}
+  {{#vendorExtensions.x-is-id}}
+  @Id
+  {{#isUuid}}
+  @GeneratedValue
+  @UuidGenerator
+  {{/isUuid}}
+  @Column(name = "{{name}}", updatable = false, nullable = false)
+  {{/vendorExtensions.x-is-id}}
+  {{#isArray}}
+  {{#vendorExtensions.x-relation-many-to-many}}
+  @ManyToMany(cascade = { CascadeType.ALL })
+  {{/vendorExtensions.x-relation-many-to-many}}
+  {{/isArray}}
+  {{^vendorExtensions.x-is-id}}
+  {{#vendorExtensions.x-created}}
+  @CreationTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  {{/vendorExtensions.x-created}}
+  {{#vendorExtensions.x-lastUpdated}}
+  @UpdateTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  {{/vendorExtensions.x-lastUpdated}}
+  @Column(name = "{{name}}")
+  {{/vendorExtensions.x-is-id}}
   {{/isEnum}}
 
   {{#vendorExtensions.x-field-extra-annotation}}
@@ -52,7 +80,6 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     this.{{name}} = b.{{name}};
     {{/vars}}
   }
-
   public {{classname}}() {
   }
   {{/additionalProperties}}
@@ -75,19 +102,6 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
     return this;
   }
 
-  {{#isArray}}
-  {{#vendorExtensions.x-relation-many-to-many}}
-  @ManyToMany(cascade = { CascadeType.ALL })
-  {{/vendorExtensions.x-relation-many-to-many}}
-  {{/isArray}}
-  {{#vendorExtensions.x-is-id}}
-  @Id
-  {{#isUuid}}
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator",parameters = {@Parameter(name = "uuid_gen_strategy_class",value = "org.hibernate.id.uuid.CustomVersionOneStrategy")})
-  {{/isUuid}}
-  @Column(name = "id", updatable = false, nullable = false)
-  {{/vendorExtensions.x-is-id}}
   {{#vendorExtensions.x-extra-annotation}}{{{vendorExtensions.x-extra-annotation}}}{{/vendorExtensions.x-extra-annotation}}{{#useSwaggerAnnotations}}
   @ApiModelProperty({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}"){{/useSwaggerAnnotations}}
   @JsonProperty("{{baseName}}")

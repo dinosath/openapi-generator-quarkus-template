@@ -9,6 +9,7 @@ additionalProperties:
     groupId: com.crazyfly
     library: quarkus
     useSwaggerAnnotations: false
+    hideGenerationTimestamp: true
 templateDir: quarkus/templates
 files:
   model_dto.mustache:
@@ -18,4 +19,7 @@ files:
   mappers.mustache:
     folder: src/main/java/com/crazyfly
     templateType: SupportingFiles
-    destinationFilename: Mappers.java    
+    destinationFilename: Mappers.java
+  openapi-generator-ignore.mustache:
+    templateType: SupportingFiles
+    destinationFilename: .openapi-generator-ignore

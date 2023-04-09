@@ -28,5 +28,19 @@
         LOGGER.debug({{paramName}});
         {{/isBodyParam}}
         {{/allParams}}
-        return {{#restfulDestroy}}Uni.createFrom().voidItem();//{{/restfulDestroy}}sf.withTransaction(session -> {{#restfulCreate}}session.persist({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}){{/restfulCreate}}{{#restfulDestroy}}session.find(Lottery.class, {{#pathParams}}{{baseName}}{{/pathParams}}).call(book -> session.remove(book)){{/restfulDestroy}}{{#restfulIndex}}session.find({{returnBaseType}}.class){{/restfulIndex}}{{#restfulShow}}session.find({{returnBaseType}}.class,{{#pathParams}}{{baseName}}{{/pathParams}}){{/restfulShow}}{{#restfulUpdate}}session.find({{#allParams}}{{#isBodyParam}}{{dataType}}{{/isBodyParam}}{{/allParams}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}).call(book -> session.refresh({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}})){{/restfulUpdate}}){{#restfulUpdate}}.replaceWithVoid(){{/restfulUpdate}}{{#restfulDestroy}}.replaceWithVoid(){{/restfulDestroy}};
+        {{#restfulShow}}
+        return sf.withTransaction(session -> session.find({{returnBaseType}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}));
+        {{/restfulShow}}
+        {{#restfulDestroy}}
+        return Uni.createFrom().voidItem();
+        {{/restfulDestroy}}
+        {{#restfulCreate}}
+        return sf.withTransaction(session -> session.persist({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}));
+        {{/restfulCreate}}
+        {{#restfulUpdate}}
+        return sf.withTransaction(session -> session.find({{returnBaseType}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}).call(book -> session.refresh({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}))).replaceWithVoid();
+        {{/restfulUpdate}}
+        {{#restfulIndex}}
+        return sf.withTransaction(session -> session.createQuery("FROM {{returnBaseType}}s",{{returnBaseType}}.class).list());
+        {{/restfulIndex}}        
     }
