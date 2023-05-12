@@ -18,3 +18,5 @@ files:
     templateType: SupportingFiles
     folder: src
     destinationFilename: apis.rs
+  Dockerfile.mustache:
+    destinationFilename: Dockerfile

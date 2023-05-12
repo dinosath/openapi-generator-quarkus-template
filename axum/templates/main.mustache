@@ -1,16 +1,15 @@
-use axum::{async_trait,extract::{FromRef, FromRequestParts, State},http::{request::Parts, StatusCode},response::Json,routing::{get, post},Router,};
-use diesel::prelude::*;
-use diesel_async::{pooled_connection::AsyncDieselConnectionManager, AsyncPgConnection, RunQueryDsl,};
+use axum::{routing::{get, post, delete, put},Router};
+use diesel_async::pooled_connection::AsyncDieselConnectionManager;
 use std::net::SocketAddr;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-mod apis;
-use apis::{ {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{operationIdSnakeCase}},{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}} };
+pub mod apis;
+use apis::*;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
+#[tokio::main]
+async fn main() {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    dotenv().ok();
+    {{! dotenv().ok(); }}
 
     tracing_subscriber::registry()
         .with(
@@ -22,15 +21,17 @@ async fn main() -> std::io::Result<()> {
 
     let db_url = std::env::var("DATABASE_URL").unwrap();
 
-    let config = AsyncDieselConnectionManager::<diesel_async::AsyncPgConnection>::new(db_url);
-    let pool = bb8::Pool::builder().build(config).await.unwrap();
+    let manager = deadpool_diesel::postgres::Manager::new(db_url, deadpool_diesel::Runtime::Tokio1);
+    let pool = deadpool_diesel::postgres::Pool::builder(manager)
+        .build()
+        .unwrap();
 
     let app = Router::new()
 {{#apiInfo}}
   {{#apis}}
     {{#operations}}
       {{#operation}}
-            .route("{{path}}",{{operationIdSnakeCase}})
+            .route("{{path}}",{{vendorExtensions.x-http-method-lowercase}}({{operationIdSnakeCase}}))
       {{/operation}}
     {{/operations}}
   {{/apis}}
@@ -40,8 +41,6 @@ async fn main() -> std::io::Result<()> {
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     tracing::debug!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }

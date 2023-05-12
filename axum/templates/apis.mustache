@@ -1,4 +1,27 @@
-use actix_web::{get, post, put, delete, Responder, HttpResponse};
+use axum::{
+    async_trait,
+    extract::{FromRef, FromRequestParts, State},
+    http::{request::Parts, StatusCode},
+    response::{Json,IntoResponse},
+    routing::{get, post},
+    Router,
+};
+use diesel_async::{pooled_connection::AsyncDieselConnectionManager, AsyncPgConnection};
+
+type Pool = bb8::Pool<AsyncDieselConnectionManager<AsyncPgConnection>>;
+
+
+fn internal_error<E>(err: E) -> (StatusCode, String)
+where
+    E: std::error::Error,
+{
+    (StatusCode::INTERNAL_SERVER_ERROR, err.to_string())
+}
+
+struct DatabaseConnection(
+    bb8::PooledConnection<'static, AsyncDieselConnectionManager<AsyncPgConnection>>,
+);
+
 
 {{#apiInfo}}
   {{#apis}}
@@ -6,21 +29,25 @@ use actix_web::{get, post, put, delete, Responder, HttpResponse};
       {{#operation}}
         {{#vendorExtensions}}
             {{#x-operation-id}}
-#[{{#x-http-method-lowercase}}{{{x-http-method-lowercase}}}{{/x-http-method-lowercase}}("{{path}}")]
 pub async fn {{{x-operation-id}}}(
+    State(pool): State<deadpool_diesel::postgres::Pool>
+
     {{#allParams}}
 
 
+
         {{#isPathParam}}
-        {{{paramName}}}: {{^required}}Option<{{/required}}web::Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}},
+        ,{{{paramName}}}: {{^required}}Option<{{/required}}Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}}
         {{/isPathParam}}
         {{^isPathParam}}
-        {{{paramName}}}: {{^required}}Option<{{/required}}web::Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}},
+        ,{{{paramName}}}: {{^required}}Option<{{/required}}Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}}
         {{/isPathParam}}
     {{/allParams}}
 
-) -> impl Responder {
-    HttpResponse::Ok().body("{{{x-operation-id}}}")
+) -> impl IntoResponse {
+
+    (StatusCode::CREATED,Json(json!({})),)
+
 }
 
             {{/x-operation-id}}
