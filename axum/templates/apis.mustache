@@ -22,6 +22,24 @@ struct DatabaseConnection(
     bb8::PooledConnection<'static, AsyncDieselConnectionManager<AsyncPgConnection>>,
 );
 
+#[async_trait]
+impl<S> FromRequestParts<S> for DatabaseConnection
+where
+    S: Send + Sync,
+    Pool: FromRef<S>,
+{
+    type Rejection = (StatusCode, String);
+
+    async fn from_request_parts(_parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let pool = Pool::from_ref(state);
+
+        let conn = pool.get_owned().await.map_err(internal_error)?;
+
+        Ok(Self(conn))
+    }
+}
+
+
 
 {{#apiInfo}}
   {{#apis}}
@@ -29,25 +47,10 @@ struct DatabaseConnection(
       {{#operation}}
         {{#vendorExtensions}}
             {{#x-operation-id}}
-pub async fn {{{x-operation-id}}}(
-    State(pool): State<deadpool_diesel::postgres::Pool>
-
-    {{#allParams}}
-
-
-
-        {{#isPathParam}}
-        ,{{{paramName}}}: {{^required}}Option<{{/required}}Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}}
-        {{/isPathParam}}
-        {{^isPathParam}}
-        ,{{{paramName}}}: {{^required}}Option<{{/required}}Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}}
-        {{/isPathParam}}
-    {{/allParams}}
-
-) -> impl IntoResponse {
-
+pub async fn {{{x-operation-id}}}(State(pool): State<Pool>{{#allParams}},{{{paramName}}}: {{^required}}Option<{{/required}}Json<{{#isArray}}&{{/isArray}}{{{dataType}}}>{{^required}}>{{/required}}{{/allParams}}) -> Result<Json<User>, (StatusCode, String)> {
+    let mut conn = pool.get().await.map_err(internal_error)?;
     (StatusCode::CREATED,Json(json!({})),)
-
+    Ok(Json(res))
 }
 
             {{/x-operation-id}}
