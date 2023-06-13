@@ -1,0 +1,3 @@
+inputSpec: lottery.json
+outputDir: lottery/src/main/proto
+generatorName: protobuf-schema

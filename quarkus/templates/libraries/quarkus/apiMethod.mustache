@@ -35,12 +35,15 @@
         return Uni.createFrom().voidItem();
         {{/restfulDestroy}}
         {{#restfulCreate}}
+        if(emitter.hasRequests()) {
+            emitter.send({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}});
+        }
         return sf.withTransaction(session -> session.persist({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}));
         {{/restfulCreate}}
         {{#restfulUpdate}}
         return sf.withTransaction(session -> session.find({{returnBaseType}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}).call(book -> session.refresh({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}))).replaceWithVoid();
         {{/restfulUpdate}}
         {{#restfulIndex}}
-        return sf.withTransaction(session -> session.createQuery("FROM {{returnBaseType}}s",{{returnBaseType}}.class).list());
-        {{/restfulIndex}}        
+        return sf.withTransaction(session -> session.createQuery("FROM {{returnBaseType}}s",{{returnBaseType}}.class).getResultList());
+        {{/restfulIndex}}
     }

@@ -7,6 +7,7 @@ import {{import}};
 
 //import {{javaxPackage}}.ws.rs.*;
 //import {{javaxPackage}}.ws.rs.core.Response;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -33,9 +34,14 @@ import jakarta.validation.Valid;
 {{/useBeanValidation}}
 {{^interfaceOnly}}
 import org.hibernate.reactive.mutiny.Mutiny;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 //import javax.inject.Inject;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestStreamElementType;
+
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import {{invokerPackage}}.Mappers;
 {{/interfaceOnly}}
@@ -51,8 +57,16 @@ public {{#interfaceOnly}}interface{{/interfaceOnly}}{{^interfaceOnly}}class{{/in
     private static final Logger LOGGER = Logger.getLogger({{classname}}.class);
 
     @Inject
+    @Channel("{{baseName}}")
+    Multi<{{imports.0.classname}}> incomingChannel;
+
+    @Inject
+    @Channel("{{baseName}}")
+    Emitter<{{imports.0.classname}}> emitter;
+
+    @Inject
     Mutiny.SessionFactory sf;
-    
+
     @Inject
     Mappers mappers;
 
@@ -68,5 +82,15 @@ public {{#interfaceOnly}}interface{{/interfaceOnly}}{{^interfaceOnly}}class{{/in
 
 {{#interfaceOnly}}{{>apiInterface}}{{/interfaceOnly}}{{^interfaceOnly}}{{>apiMethod}}{{/interfaceOnly}}
 {{/operation}}
+
+    @GET
+    @Path("/stream")
+    @RestStreamElementType(MediaType.APPLICATION_JSON)
+    public Multi<{{imports.0.classname}}> get{{imports.0.classname}}Stream() {
+        Uni<List<{{imports.0.classname}}>> listUni = sf.withTransaction(session -> session.createQuery("FROM {{imports.0.classname}}s",{{imports.0.classname}}.class).getResultList());
+        Multi<{{imports.0.classname}}> listMulti = listUni.onItem().transformToMulti(item -> Multi.createFrom().iterable(item));
+        return Multi.createBy().merging().streams(incomingChannel,listMulti);
+    }
+
 }
 {{/operations}}
