@@ -1,5 +1,3 @@
-inputSpec: lottery.json
-outputDir: lottery
 generatorName: jaxrs-spec
 additionalProperties:
     modelPackage: com.crazyfly.models
