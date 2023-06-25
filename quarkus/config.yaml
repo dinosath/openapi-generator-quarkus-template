@@ -10,14 +10,9 @@ additionalProperties:
     hideGenerationTimestamp: true
 templateDir: quarkus/templates
 files:
-  model_dto.mustache:
-    folder: dto
+  crud_service.mustache:
     templateType: Model
-    destinationFilename: Dto.java
-  mappers.mustache:
-    folder: src/main/java/com/crazyfly
-    templateType: SupportingFiles
-    destinationFilename: Mappers.java
+    destinationFilename: CrudService.java
   openapi-generator-ignore.mustache:
     templateType: SupportingFiles
     destinationFilename: .openapi-generator-ignore

@@ -24,26 +24,22 @@
     public {{>apiResponse}} {{nickname}}({{#allParams}}{{>queryParams}}{{>pathParams}}{{>cookieParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{^-last}},{{/-last}}{{/allParams}}) {
         {{#allParams}}
         {{#isBodyParam}}
-        {{{dataType}}} {{paramName}} = mappers.from{{{dataType}}}Dto({{paramName}}Dto);
         LOGGER.debug({{paramName}});
         {{/isBodyParam}}
         {{/allParams}}
         {{#restfulShow}}
-        return sf.withTransaction(session -> session.find({{returnBaseType}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}));
+        return crudService.get({{#pathParams}}{{baseName}}{{/pathParams}});
         {{/restfulShow}}
         {{#restfulDestroy}}
-        return Uni.createFrom().voidItem();
+        return crudService.delete({{#pathParams}}{{baseName}}{{/pathParams}});
         {{/restfulDestroy}}
         {{#restfulCreate}}
-        if(emitter.hasRequests()) {
-            emitter.send({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}});
-        }
-        return sf.withTransaction(session -> session.persist({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}));
+        return crudService.save({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}});
         {{/restfulCreate}}
         {{#restfulUpdate}}
-        return sf.withTransaction(session -> session.find({{returnBaseType}}.class, {{#pathParams}}{{baseName}}{{/pathParams}}).call(book -> session.refresh({{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}}))).replaceWithVoid();
+        return crudService.update({{#pathParams}}{{baseName}}{{/pathParams}},{{#allParams}}{{#isBodyParam}}{{paramName}}{{/isBodyParam}}{{/allParams}});
         {{/restfulUpdate}}
         {{#restfulIndex}}
-        return sf.withTransaction(session -> session.createQuery("FROM {{returnBaseType}}s",{{returnBaseType}}.class).getResultList());
+        return crudService.list();
         {{/restfulIndex}}
     }

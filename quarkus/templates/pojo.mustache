@@ -37,6 +37,7 @@ public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtens
   {{/isContainer}}
   {{/isEnum}}
 
+  {{#isReadOnly}}@JsonProperty(access = JsonProperty.Access.READ_ONLY){{/isReadOnly}}
   {{^isEnum}}
   {{#vendorExtensions.x-is-id}}
   @Id

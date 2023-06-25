@@ -1,0 +1,67 @@
+package {{package}};
+
+{{#imports}}
+import {{import}};
+{{/imports}}
+
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.reactive.messaging.annotations.Broadcast;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.hibernate.reactive.mutiny.Mutiny;
+import org.jboss.logging.Logger;
+
+import java.util.List;
+{{#models}}
+{{#model}}
+import {{importPath}};
+public class {{classname}}CrudService {
+
+    private static final Logger logger = Logger.getLogger({{classname}}CrudService.class);
+
+    @Inject
+    @Channel("{{classVarName}}s")
+    Multi<{{classname}}> incomingChannel;
+
+    @Inject
+    @Channel("{{classVarName}}s")
+    @Broadcast
+    Emitter<{{classname}}> emitter;
+
+    @Inject
+    Mutiny.SessionFactory sf;
+
+    public Uni<Void> save({{classname}} {{classVarName}}){
+        if(emitter.hasRequests()) {
+            emitter.send({{classVarName}});
+        }
+        return sf.withTransaction(session -> session.persist({{classVarName}}));
+    }
+
+    public Uni<Void> delete(String id) {
+        return sf.withTransaction(session -> session.find({{classname}}.class,id).replaceWithVoid());
+    }
+
+    public Uni<{{classname}}> get(String id) {
+        return sf.withTransaction(session -> session.find({{classname}}.class, id));
+    }
+
+    public Uni<List<{{classname}}>> list() {
+        return sf.withTransaction(session -> session.createQuery("FROM {{classname}}s",{{classname}}.class).getResultList());
+    }
+
+    public Uni<Void> update(String id,{{classname}} {{classVarName}}) {
+        logger.debug({{classVarName}});
+        return sf.withTransaction(session -> session.find(Void.class, id).call(book -> session.refresh({{classVarName}}))).replaceWithVoid();
+    }
+
+    public Multi<{{classname}}> listStream() {
+        Multi<{{classname}}> listMulti = list().onItem().transformToMulti(item -> Multi.createFrom().iterable(item));
+        return Multi.createBy().merging().streams(incomingChannel,listMulti);
+    }
+
+}
+{{/model}}
+{{/models}}
