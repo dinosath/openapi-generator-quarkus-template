@@ -7,6 +7,7 @@ import {{import}};
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -17,16 +18,18 @@ import java.util.List;
 {{#models}}
 {{#model}}
 import {{importPath}};
+
+@ApplicationScoped
 public class {{classname}}CrudService {
 
     private static final Logger logger = Logger.getLogger({{classname}}CrudService.class);
 
     @Inject
-    @Channel("{{classVarName}}s")
+    @Channel("{{classVarName}}s-in")
     Multi<{{classname}}> incomingChannel;
 
     @Inject
-    @Channel("{{classVarName}}s")
+    @Channel("{{classVarName}}s-out")
     @Broadcast
     Emitter<{{classname}}> emitter;
 
