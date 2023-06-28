@@ -1,0 +1,48 @@
+package com.crazyfly.resources;
+
+import com.crazyfly.GrpcMappers;
+import com.crazyfly.models.*;
+import com.google.protobuf.Empty;
+import io.quarkus.grpc.GrpcService;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import openapitools.GiftOuterClass;
+import openapitools.LotteryOuterClass;
+import openapitools.UserOuterClass;
+import openapitools.services.defaultservice.DefaultService;
+import openapitools.services.defaultservice.DefaultServiceOuterClass;
+import org.jboss.logging.Logger;
+
+@Singleton
+@GrpcService
+public class GrpcCrudService implements DefaultService {
+
+    private static final Logger logger = Logger.getLogger(GrpcCrudService.class);
+
+    @Inject
+    GrpcMappers grpcMappers;
+
+{{#models}}
+{{#model}}
+
+    @Inject
+    {{{classname}}}CrudService {{{classFilename}}}CrudService;
+{{/model}}
+{{/models}}
+
+{{#apiInfo}}
+    {{#apis}}
+        {{#operations}}
+            {{#operation}}
+    @Override
+    public Uni<{{^hasProduces}}{{{vendorExtensions.x-grpc-response}}}{{/hasProduces}}{{#hasProduces}}{{{classname}}}OuterClass.{{{operationIdCamelCase}}} Response{{/hasProduces}}> createGift({{#hasParams}}{{{classname}}}OuterClass.{{{operationIdCamelCase}}}Request request{{/hasParams}}{{^hasParams}} Empty empty{{/hasParams}} ) {
+        return null;
+    }
+            {{/operation}}
+        {{/operations}}
+    {{/apis}}
+{{/apiInfo}}
+
+}

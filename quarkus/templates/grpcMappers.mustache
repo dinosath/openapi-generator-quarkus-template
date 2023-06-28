@@ -1,0 +1,22 @@
+package com.crazyfly;
+
+import com.crazyfly.models.Gift;
+import com.crazyfly.models.User;
+import openapitools.GiftOuterClass;
+import openapitools.UserOuterClass;
+import openapitools.services.defaultservice.DefaultServiceOuterClass;
+import org.mapstruct.*;
+
+import java.util.List;
+
+@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED
+)
+public interface GrpcMappers {
+
+    User map(UserOuterClass.User user);
+    GiftOuterClass.Gift map(Gift gift);
+
+}

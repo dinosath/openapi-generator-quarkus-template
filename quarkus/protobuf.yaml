@@ -1,3 +1,11 @@
 inputSpec: lottery.json
 outputDir: lottery/src/main/proto
 generatorName: protobuf-schema
+templateDir: quarkus/templates
+files:
+  grpcService.mustache:
+    templateType: SupportingFiles
+    destinationFilename: GrpcCrudService.java
+  openapi-generator-ignore.mustache:
+    templateType: SupportingFiles
+    destinationFilename: .openapi-generator-ignore
